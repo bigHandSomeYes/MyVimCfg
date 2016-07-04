@@ -1,0 +1,134 @@
+set nocompatible
+source $VIMRUNTIME/vimrc_example.vim
+source $VIMRUNTIME/mswin.vim
+behave mswin
+
+set ff=unix
+set encoding=utf-8
+set termencoding=utf-8
+set fileencoding=utf-8
+set fileencodings=ucs-borm,utf-8,chinese,cp936
+language messages zh_CN.utf-8
+"解决菜单乱码
+source $VIMRUNTIME/delmenu.vim
+source $VIMRUNTIME/menu.vim
+"解决consle输出乱码
+
+colo monokai
+set nu
+set ts=4
+set guifont=Consolas:h10
+set shiftwidth=4
+set guioptions-=m
+set guioptions-=T
+set shortmess=atI
+"" set no backup
+set nobackup
+
+set expandtab
+set cursorline
+set cursorcolumn
+hi CursorColumn guibg=darkred
+
+set cmdheight=2
+
+set listchars=tab:>-,trail:-
+set list
+
+"" set window
+winpos 900 0
+winsize 180 200
+
+"" set folder
+set foldmethod=indent
+
+"" map
+nnoremap <F12> :!python % <CR>
+nnoremap <F11> :!pylint -r no % <CR>
+nnoremap <C-F3> :NERDTree %:h<CR>
+nnoremap <F3> :NERDTreeToggle<CR>
+nnoremap <A-c> :q<CR>
+nnoremap <A-a> :qall<CR>
+nnoremap <C-O> :silent !cmd /c start %:h<CR>
+nnoremap <F5> :silent !python %<CR>
+nnoremap <space> vi"y
+nnoremap <leader>ev :vsplit $MYVIMRC<cr>
+nnoremap <leader>sv :source $MYVIMRC<cr>
+inoremap <esc> <nop>
+inoremap jk <esc>
+
+"" autocmd
+augroup mygroup
+    autocmd!
+    autocmd BufWrite $MYVIMRC :source $MYVIMRC
+    autocmd BufReadPre *.py :set foldmethod=indent
+augroup END
+
+"" tab
+nnoremap <C-tab> :tabnext<CR>
+nnoremap <C-S-tab> :tabprevious<CR>
+nnoremap <C-F2> :call SetMyPathAndWD()<CR>
+
+"" set path and work diretory
+function! s:MyDirname(file)
+    ""return substitute(a:file, "\\\\[^\\\\]*$", '', '')
+    return "ldfj"
+endfunction
+
+function! SetMyPathAndWD()
+    let tags = expand('%:h')
+    echom tags
+    "while !findfile("tags", tags)
+    "    if tags =~ "^[A-Z]:\$"
+    "        echom "no tags find"
+    "        return
+
+        tags = s:MyDirname(tags)
+    "endwhile
+    echom tags
+endfunction
+
+"" autocmd BufWritePost *.py !pylint <afile>
+
+nnoremap <F4> :call TitleDeal()<cr>
+
+"" author info
+function! AddTitile()
+    call append(0, "#!/usr/bin/env python")
+    call append(1, "# -*- coding:utf-8 -*-")
+    call append(2, "#=============================================================================")
+    call append(3, "# Copyright © 2016 Sangfor Technologies")
+    call append(4, "#")
+    call append(5, "# Author: gexy - 45900@sangfor.com")
+    call append(6, "#")
+    call append(7, "# Last modified: ".strftime("%Y-%m-%d %H:%M"))
+    call append(8, "#")
+    call append(9, "# Filename: ".expand("%:t"))
+    call append(10, "#")
+    call append(11, "# Description:")
+    call append(12, "#")
+    call append(13, "#============================================================================")
+    echohl WarningMsg | echo "Success" | echohl None
+endfunction
+
+function! UpdateTitle()
+    echohl "not impl"
+endfunction
+
+function! TitleDeal()
+    let n=1
+    while n < 10
+        let line = getline(n)
+        if line =~ '^\#\s*\S*Last\smodified:\S*.*$'
+            call UpdateTitle()
+            return
+        endif
+        let n = n + 1
+    endwhile
+    call AddTitile()
+endfunction
+
+"" NERDTree Config
+let NERDTreeDirArrowCollapsible='↓'
+let NERDTreeDirArrowExpandable='→'
+
