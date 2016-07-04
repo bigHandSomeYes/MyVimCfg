@@ -5,7 +5,18 @@ behave mswin
 
 set nobackup
 set encoding=utf-8
+set termencoding=utf-8
+set fileencodings=utf-8
+set fileencodings=ucs-borm,utf-8,chinese,cp936
+
+language messages zh_CN.utf-8
+source $VIMRUNTIME/delmenu.vim
+source $VIMRUNTIME/menu.vim
+
 colo monokai
+
+inoremap <esc> <nop>
+inoremap jk <esc>
 set guifont=Consolas:h10
 set guioptions-=m
 set guioptions-=T
